@@ -1656,8 +1656,10 @@ static int do_register_framebuffer(struct fb_info *fb_info)
 		/* Not fatal */
 		printk(KERN_WARNING "Unable to create device for framebuffer %d; errno = %ld\n", i, PTR_ERR(fb_info->dev));
 		fb_info->dev = NULL;
-	} else
-		fb_init_device(fb_info);
+	} else {
+		dev_set_drvdata(fb_info->dev, fb_info);
+		fb_register_sysfs(fb_info);
+	}
 
 	if (fb_info->pixmap.addr == NULL) {
 		fb_info->pixmap.addr = kmalloc(FBPIXMAPSIZE, GFP_KERNEL);
@@ -1755,7 +1757,7 @@ static void do_unregister_framebuffer(struct fb_info *fb_info)
 	fb_destroy_modelist(&fb_info->modelist);
 	registered_fb[fb_info->node] = NULL;
 	num_registered_fb--;
-	fb_cleanup_device(fb_info);
+	fb_unregister_sysfs(fb_info);
 #ifdef CONFIG_GUMSTIX_AM200EPD
 	{
 		struct fb_event event;

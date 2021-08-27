@@ -515,11 +515,9 @@ static struct device_attribute device_attrs[] = {
 #endif
 };
 
-int fb_init_device(struct fb_info *fb_info)
+int fb_register_sysfs(struct fb_info *fb_info)
 {
 	int i, error = 0;
-
-	dev_set_drvdata(fb_info->dev, fb_info);
 
 	fb_info->class_flag |= FB_SYSFS_FLAG_ATTR;
 
@@ -539,7 +537,7 @@ int fb_init_device(struct fb_info *fb_info)
 	return 0;
 }
 
-void fb_cleanup_device(struct fb_info *fb_info)
+void fb_unregister_sysfs(struct fb_info *fb_info)
 {
 	unsigned int i;
 
