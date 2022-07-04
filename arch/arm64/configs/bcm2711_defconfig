@@ -50,6 +50,7 @@ CONFIG_SETEND_EMULATION=y
 # CONFIG_ARM64_BTI is not set
 # CONFIG_ARM64_E0PD is not set
 # CONFIG_ARCH_RANDOM is not set
+# CONFIG_ARM64_SVE is not set
 CONFIG_RANDOMIZE_BASE=y
 CONFIG_CMDLINE="console=ttyAMA0,115200 kgdboc=ttyAMA0,115200 root=/dev/mmcblk0p2 rootfstype=ext4 rootwait"
 # CONFIG_SUSPEND is not set
