@@ -341,6 +341,7 @@ static void vunmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
 	pmd_t *pmd;
 	unsigned long next;
 	int cleared;
+	bool check_resched = (end - addr) > PMD_SIZE;
 
 	pmd = pmd_offset(pud, addr);
 	do {
@@ -356,7 +357,8 @@ static void vunmap_pmd_range(pud_t *pud, unsigned long addr, unsigned long end,
 			continue;
 		vunmap_pte_range(pmd, addr, next, mask);
 
-		cond_resched();
+		if (check_resched)
+			cond_resched();
 	} while (pmd++, addr = next, addr != end);
 }
 
