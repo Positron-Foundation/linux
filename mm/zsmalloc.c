@@ -58,6 +58,8 @@
 #include <linux/pagemap.h>
 #include <linux/fs.h>
 
+#include "internal.h"
+
 #define ZSPAGE_MAGIC	0x58
 
 /*
@@ -1146,8 +1148,11 @@ static inline void *__zs_map_object(struct mapping_area *area,
 				struct page *pages[2], int off, int size)
 {
 	unsigned long addr = (unsigned long)area->vm->addr;
+	unsigned long end = addr + PAGE_SIZE * 2;
 
-	BUG_ON(map_kernel_range(addr, PAGE_SIZE * 2, PAGE_KERNEL, pages) < 0);
+	BUG_ON(vmap_pages_range_noflush(addr, end,
+                    PAGE_KERNEL, pages, PAGE_SHIFT) < 0);
+	flush_cache_vmap(addr, end);
 	area->vm_addr = area->vm->addr;
 	return area->vm_addr + off;
 }
@@ -1157,7 +1162,7 @@ static inline void __zs_unmap_object(struct mapping_area *area,
 {
 	unsigned long addr = (unsigned long)area->vm_addr;
 
-	unmap_kernel_range(addr, PAGE_SIZE * 2);
+	vunmap_range(addr, addr + PAGE_SIZE * 2);
 }
 
 #else /* CONFIG_ZSMALLOC_PGTABLE_MAPPING */
