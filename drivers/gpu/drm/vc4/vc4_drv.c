@@ -51,6 +51,8 @@
 #define DRIVER_MINOR 0
 #define DRIVER_PATCHLEVEL 0
 
+extern bool bcm2835_power_probed;
+
 /* Helper function for mapping the regs on a platform device. */
 void __iomem *vc4_ioremap_regs(struct platform_device *dev, int index)
 {
@@ -314,6 +316,9 @@ static int vc4_drm_bind(struct device *dev)
 	struct drm_crtc *crtc;
 	bool is_vc5;
 	int ret = 0;
+
+        if (!bcm2835_power_probed)
+                return -EPROBE_DEFER;
 
 	dev->coherent_dma_mask = DMA_BIT_MASK(32);
 

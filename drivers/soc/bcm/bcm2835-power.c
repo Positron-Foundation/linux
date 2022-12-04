@@ -129,6 +129,9 @@
 #define ASB_READ(reg) readl(power->asb + (reg))
 #define ASB_WRITE(reg, val) writel(PM_PASSWORD | (val), power->asb + (reg))
 
+bool bcm2835_power_probed;
+EXPORT_SYMBOL(bcm2835_power_probed);
+
 struct bcm2835_power_domain {
 	struct generic_pm_domain base;
 	struct bcm2835_power *power;
@@ -687,6 +690,7 @@ static int bcm2835_power_probe(struct platform_device *pdev)
 	of_genpd_add_provider_onecell(dev->parent->of_node, &power->pd_xlate);
 
 	dev_info(dev, "Broadcom BCM2835 power domains driver");
+	bcm2835_power_probed = true;
 	return 0;
 
 fail:
